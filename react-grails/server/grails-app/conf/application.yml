@@ -1,7 +1,5 @@
 ---
 grails:
-    cors:
-        enable: true
     profile: react-webpack
     codegen:
         defaultPackage: complete
@@ -86,6 +84,10 @@ endpoints:
 
 ---
 # TODO: profile custom configuration
+grails:
+    cors:
+        enabled: true
+
 foo:
     bar: mysetting
 ---
