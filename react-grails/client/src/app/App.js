@@ -1,10 +1,7 @@
-import React, {Fragment, useState, useEffect} from 'react'
-import '../css/App.css'
-import grailsLogo from '../images/grails-cupsonly-logo-white.svg';
-import reactLogo from '../images/logo.svg';
-import {CLIENT_VERSION, REACT_VERSION, SERVER_URL} from '../config';
-import MainPage from './main/MainPage';
+import React from 'react';
+import '../css/App.css';
 import logo from '../logo.svg';
+import MainPage from './main/MainPage';
 
 const GrailsLogoHeader = () => {
     return <div className="App">

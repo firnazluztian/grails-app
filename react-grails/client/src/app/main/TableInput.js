@@ -2,101 +2,88 @@ import React, { useEffect, useState } from 'react'
 import { SERVER_URL } from '../../config'
 import axios from 'axios' 
 
-const inputInitialState = {
-    driver: '', make: '', model: '', name: ''
-}
+const inputInitialState = { name: '', class: '', licenseNum: '', date: '', amount: '' }
 
 const TableInput = ({ isEdit, setIsEdit }) => {
     const [input, setInput] = useState(inputInitialState)
-    const [makes, setMakes] = useState({data:[]})
-    const [models, setModels] = useState({data:[]})
     const [drivers, setDrivers] = useState({data:[]})
 
-    const getMake = async () => {
-        await axios
-        .get(SERVER_URL + 'make').then(res => setMakes(res)).catch(err => console.log('@getMake', err))
-    }
-    
-    const getModel = async () => {
-        await axios
-        .get(SERVER_URL + 'model').then(res => setModels(res)).catch(err => console.log('@getModel', err))
-    }
-    
+    // DEBUG
+    useEffect(() => {
+        console.log(isEdit)
+    }, [isEdit])
+
     const getDriver = async () => {
         await axios
         .get(SERVER_URL + 'driver').then(res => setDrivers(res)).catch(err => console.log('@getDriver', err))
     }
     
-    const postData = async (state) => {
+    const postLicense = async () => {
         await axios
-        .post(SERVER_URL + 'vehicle', {
-            name: state.name,
-            make: {id: state.make},
-            model: {id: state.model},
-            driver: {id: state.driver}
+        .post(SERVER_URL + 'license', {
+            classType: input.class, licenseNum: parseInt(input.licenseNum), bid: { date: input.date, amount: parseInt(input.amount) }, driver: { id: parseInt(input.name) }
         })
         .then(res => {
             alert('succesfully saved')
             setInput(inputInitialState)
         })
-        .catch(err => console.log('@postData', err))
+        .catch(err => console.log('@postLicense', err))
     }
     
-    const updateData = async (state, selectedId) => {
+    const updateLicense = async (input, selectedId) => {
         await axios
-        .patch(SERVER_URL + 'vehicle/' + selectedId, {
-            name: state.name,
-            make: {id: state.make},
-            model: {id: state.model},
-            driver: {id: state.driver}
+        .patch(SERVER_URL + 'license/' + selectedId, {
+            classType: input.class, licenseNum: parseInt(input.licenseNum), bid: { date: input.date, amount: parseInt(input.amount) }, driver: { id: parseInt(input.name) }
         })
         .then(res => {
             alert('succesfully edited')
+            console.log(res)
             setInput(inputInitialState)
             setIsEdit({edit: false})
         })
-        .catch(err => console.log('@updateData', err))
+        .catch(err => console.log('@updateLicense', err))
     }
 
     useEffect(() => {
-        if(isEdit.edit) setInput({driver: isEdit.driver, make: isEdit.make, model: isEdit.model, name: isEdit.name})
+        if(isEdit.edit) setInput({name: isEdit.name, class: isEdit.class, licenseNum: isEdit.licenseNum, date: isEdit.date, amount: isEdit.amount})
     }, [isEdit])
 
-    useEffect(() => { getMake() }, [])
-    useEffect(() => { getModel() }, [])
     useEffect(() => { getDriver() }, [])
 
     const handleChange = (e) => setInput({...input, [e.target.name]: e.target.value})
     const handleSubmit = () => {
-        if(!isEdit.edit) postData(input)
-        else updateData(input, isEdit.id)
+        if(!isEdit.edit) { 
+            postLicense(); console.log(input)
+        }
+        else updateLicense(input, isEdit.id)
     }
 
     return <div className='row mb-2'>
         
         <div className='col input-grup'>
-            <input className='form-control' type='text' placeholder='Name' name='name' value={input.name} onChange={handleChange} />
-        </div>
-        
-        <div className='col input-grup'>
-            <select id="inputState" className="form-control" name='make' value={input.make} onChange={handleChange}>
-                <option value="" selected disabled hidden>Choose make</option>
-                {makes.data.map((item, index) => <option key={index} value={item.id}>{item.name}</option>)}
-            </select>
-        </div>
-        
-        <div className='col input-grup'>
-            <select id="inputState" className="form-control" name='model' value={input.model} onChange={handleChange}>
-            <option value="" selected disabled hidden>Choose model</option>
-                {models.data.map((item, index) => <option key={index} value={item.id}>{item.name}</option>)}
+            <select id="inputState" className="form-control" name='name' value={input.name} onChange={handleChange}>
+                <option value="" selected disabled hidden>Choose driver</option>
+                {drivers.data.map((item, index) => <option key={index} value={item.id}>{item.name}</option>)}
             </select>
         </div>
 
         <div className='col input-grup'>
-            <select id="inputState" className="form-control" name='driver' value={input.driver} onChange={handleChange}>
-            <option value="" selected disabled hidden>Choose driver</option>
-                {drivers.data.map((item, index) => <option key={index} value={item.id}>{item.name}</option>)}
+            <select id="inputState" className="form-control" name='class' value={input.class} onChange={handleChange}>
+                <option value="" selected disabled hidden>Choose class</option>
+                {['CLASS_A', 'CLASS_B', 'CLASS_C'].map((item, index) => <option key={index} value={item}>{item}</option>)}
             </select>
+        </div>
+        
+        <div className='col input-grup'>
+            <input className='form-control' type='number' placeholder='License number' name='licenseNum' value={input.licenseNum} onChange={handleChange} />
+        </div>
+
+        <div className='col input-grup'>
+            <input className='form-control' type='date' placeholder='License number' name='date' value={input.date} onChange={handleChange} />
+        </div>
+
+        <div className='col input-grup'>
+            <input className='form-control' type='number' placeholder='Bid amount' name='amount' value={input.amount} onChange={handleChange} />
         </div>
 
         {!isEdit.edit && 
@@ -116,3 +103,4 @@ const TableInput = ({ isEdit, setIsEdit }) => {
 }
 
 export default TableInput
+
