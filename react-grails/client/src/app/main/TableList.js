@@ -3,18 +3,19 @@ import { SERVER_URL } from '../../config'
 import axios from 'axios'
 
 const tableHeader = ['#', 'Name', 'Make', 'Model', 'Driver', 'Action']
-const TableList = () => {
+
+const TableList = ({ isEdit, setIsEdit }) => {
     const [vehicles, setVehicles] = useState({data:[]})
     
     const getVehicle = async () => {
         await axios.get(SERVER_URL + 'vehicle').then(res => setVehicles(res)).catch(err => console.log('@getVehicle', err))
     }
     
-    useEffect(() => { getVehicle() }, [vehicles])
+    useEffect(() => { getVehicle() }, [])
 
     const deleteData = async (id) => {
         await axios.delete(SERVER_URL + 'vehicle/' + id)
-        .then(res => console.log('successfully deleted'))
+        .then(alert('succesfully deleted'))
         .catch(err => console.log('@deleteData', err))
     } 
 
@@ -33,8 +34,11 @@ const TableList = () => {
                 <td>{item.model.name}</td>
                 <td>{item.driver.name}</td>
                 <td>
-                    <button className='btn btn-primary mr-1'>edit</button>
-                    <button className='btn btn-danger' onClick={() => deleteData(item.id)}>delete</button>
+                    <button 
+                        className='btn btn-primary mr-1' 
+                        onClick={() => setIsEdit({ edit: true, id: item.id, name: item.name, make: item.make.id, model: item.model.id, driver: item.driver.id })}
+                    >Edit</button>
+                    <button className='btn btn-danger' onClick={() => deleteData(item.id)}>Delete</button>
                 </td>
             </tr>
         })}

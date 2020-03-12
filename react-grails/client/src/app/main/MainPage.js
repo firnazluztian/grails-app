@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import TableInput from './TableInput'
 import TableList from './TableList'
 
 const MainPage = () => {
+    const [isEdit, setIsEdit] = useState({ 
+        edit: false, id: '', name: '', make: '', model: '', driver: ''
+    })
     return <div className='container'>
-        <TableInput />
-        <TableList /> 
+        <TableInput isEdit={isEdit} setIsEdit={setIsEdit} />
+        <TableList isEdit={isEdit} setIsEdit={setIsEdit} /> 
     </div>
 }
 
