@@ -7,9 +7,9 @@ class Driver {
 
     String name
 
-    static hasMany = [ vehicles: Vehicle ]
+    static hasMany = [ license: License ]
 
     static constraints = {
-        vehicles nullable: true
+        license nullable: true
     }
 }

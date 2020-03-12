@@ -1,0 +1,19 @@
+import demo.License
+
+model {
+    License license
+}
+json {
+    id license.id
+
+    classType license.classType
+
+    bid date: license.bid.date,
+        id: license.bid.id
+
+    bid amount: license.bid.amount,
+        id: license.bid.id
+
+    driver name: license.driver.name,
+        id: license.driver.id
+}
