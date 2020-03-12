@@ -4,7 +4,7 @@ import TableList from './TableList'
 
 const MainPage = () => {
     const [isEdit, setIsEdit] = useState({ 
-        edit: false, id: '', name: '', make: '', model: '', driver: ''
+        edit: false, id: '', name: '', class: '', licenseNum: '', date: '', amount: ''
     })
     return <div className='container'>
         <TableInput isEdit={isEdit} setIsEdit={setIsEdit} />

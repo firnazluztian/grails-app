@@ -7,7 +7,7 @@ class Driver {
 
     String name
 
-    static hasMany = [ license: License ]
+    static hasMany = [license: License]
 
     static constraints = {
         license nullable: true

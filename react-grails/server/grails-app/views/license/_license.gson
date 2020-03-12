@@ -8,10 +8,10 @@ json {
 
     classType license.classType
 
-    bid date: license.bid.date,
-        id: license.bid.id
+    licenseNum license.licenseNum
 
-    bid amount: license.bid.amount,
+    bid date: license.bid.date,
+        amount: license.bid.amount,
         id: license.bid.id
 
     driver name: license.driver.name,
