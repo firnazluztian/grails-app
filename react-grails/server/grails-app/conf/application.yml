@@ -1,5 +1,7 @@
 ---
 grails:
+    cors:
+        enable: true
     profile: react-webpack
     codegen:
         defaultPackage: complete
