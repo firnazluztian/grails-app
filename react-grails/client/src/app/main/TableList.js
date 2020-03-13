@@ -31,7 +31,11 @@ const TableList = ({ setIsEdit, refresh, setRefresh }) => {
         {licenses.data.map((rowItem, index) => {
             return <tr key={index}>
                 <th scope='row'>{rowItem.id}</th>
-                {[rowItem.driver.name, rowItem.classType, rowItem.licenseNum, rowItem.bid.date, rowItem.bid.amount].map((item, i) => <td key={i}>{item}</td>)}
+                <td>{rowItem.driver.name}</td>
+                <td>{rowItem.classType}</td>
+                <td>{rowItem.licenseNum}</td>
+                <td>{rowItem.bid.date}</td>
+                <td>${rowItem.bid.amount}</td>
                 <td>
                     <button 
                         className='btn btn-primary mr-1' 
