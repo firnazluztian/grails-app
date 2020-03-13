@@ -6,6 +6,13 @@ import { toastSuccess, toastDanger, toastWarning } from '../widget/toaster'
 const classTypes = ['CLASS_A', 'CLASS_B', 'CLASS_C']
 const inputInitialState = { name: '', class: '', licenseNum: '', date: '', amount: '' }
 
+const validateInput = (input) => {
+    if (!Object.values(input).every(e => e !== '')) toastWarning('please input all the required fields')
+    else if (input.licenseNum.toString().length > 8 || input.licenseNum < 0) toastWarning('license number maximum digit is 9 and cannot be negative value')
+    else if (input.amount < 0) toastWarning('bid amount cannot be a negative value')
+    else return true
+}
+
 const TableInput = ({ isEdit, setIsEdit, refresh, setRefresh }) => {
     const [input, setInput] = useState(inputInitialState)
     const [drivers, setDrivers] = useState({data:[]})
@@ -18,8 +25,7 @@ const TableInput = ({ isEdit, setIsEdit, refresh, setRefresh }) => {
     }
     
     const postLicense = async () => {
-        if (!Object.values(input).every(e => e !== '')) toastWarning('please input all the required fields')
-        else {
+        if (validateInput(input)) {
             await axios
             .post(SERVER_URL + 'license', {
                 classType: input.class, licenseNum: parseInt(input.licenseNum), bid: { date: input.date, amount: parseInt(input.amount) }, driver: { id: parseInt(input.name) }
@@ -34,8 +40,7 @@ const TableInput = ({ isEdit, setIsEdit, refresh, setRefresh }) => {
     }
     
     const updateLicense = async (input, selectedId) => {
-        if (!Object.values(input).every(e => e !== '')) toastWarning('please input all the required fields')
-        else {
+        if (validateInput(input)) {
             await axios
             .patch(SERVER_URL + 'license/' + selectedId, {
                 classType: input.class, licenseNum: parseInt(input.licenseNum), bid: { date: input.date, amount: parseInt(input.amount) }, driver: { id: parseInt(input.name) }
