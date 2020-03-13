@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { SERVER_URL } from '../../config'
 import axios from 'axios' 
-import { toastSuccess, toastDanger } from '../widget/toaster'
+import { toastSuccess, toastDanger, toastWarning } from '../widget/toaster'
 
+const classTypes = ['CLASS_A', 'CLASS_B', 'CLASS_C']
 const inputInitialState = { name: '', class: '', licenseNum: '', date: '', amount: '' }
 
 const TableInput = ({ isEdit, setIsEdit, refresh, setRefresh }) => {
@@ -17,59 +18,57 @@ const TableInput = ({ isEdit, setIsEdit, refresh, setRefresh }) => {
     }
     
     const postLicense = async () => {
-        await axios
-        .post(SERVER_URL + 'license', {
-            classType: input.class, licenseNum: parseInt(input.licenseNum), bid: { date: input.date, amount: parseInt(input.amount) }, driver: { id: parseInt(input.name) }
-        })
-        .then(res => {
-            toastSuccess('succesfully saved')
-            setRefresh(true)
-            setInput(inputInitialState)
-        })
-        .catch(err => { toastDanger(`${err}, please try again`); console.log('@postLicense', err) })
+        if (!Object.values(input).every(e => e !== '')) toastWarning('please input all the required fields')
+        else {
+            await axios
+            .post(SERVER_URL + 'license', {
+                classType: input.class, licenseNum: parseInt(input.licenseNum), bid: { date: input.date, amount: parseInt(input.amount) }, driver: { id: parseInt(input.name) }
+            })
+            .then(() => {
+                toastSuccess('succesfully saved')
+                setRefresh(true)
+                setInput(inputInitialState)
+            })
+            .catch(err => { toastDanger(`${err}, please try again`); console.log('@postLicense', err) })
+        }
     }
     
     const updateLicense = async (input, selectedId) => {
-        await axios
-        .patch(SERVER_URL + 'license/' + selectedId, {
-            classType: input.class, licenseNum: parseInt(input.licenseNum), bid: { date: input.date, amount: parseInt(input.amount) }, driver: { id: parseInt(input.name) }
-        })
-        .then(res => {
-            toastSuccess('succesfully edited')
-            setRefresh(true)
-            setInput(inputInitialState)
-            setIsEdit({edit: false})
-        })
-        .catch(err => { toastDanger(`${err}, please try again`); console.log('@updateLicense', err) })
+        if (!Object.values(input).every(e => e !== '')) toastWarning('please input all the required fields')
+        else {
+            await axios
+            .patch(SERVER_URL + 'license/' + selectedId, {
+                classType: input.class, licenseNum: parseInt(input.licenseNum), bid: { date: input.date, amount: parseInt(input.amount) }, driver: { id: parseInt(input.name) }
+            })
+            .then(res => {
+                toastSuccess('succesfully edited')
+                setRefresh(true)
+                setInput(inputInitialState)
+                setIsEdit({edit: false})
+            })
+            .catch(err => { toastDanger(`${err}, please try again`); console.log('@updateLicense', err) })
+        }
     }
-
-    useEffect(() => {
-        if(isEdit.edit) setInput({name: isEdit.name, class: isEdit.class, licenseNum: isEdit.licenseNum, date: isEdit.date, amount: isEdit.amount})
-    }, [isEdit])
-
-    useEffect(() => { getDriver() }, [refresh])
 
     const handleChange = (e) => setInput({...input, [e.target.name]: e.target.value})
-    const handleSubmit = () => {
-        if(!isEdit.edit) { 
-            postLicense(); console.log(input)
-        }
-        else updateLicense(input, isEdit.id)
-    }
+    const handleSubmit = () => isEdit.edit ? updateLicense(input, isEdit.id) : postLicense()
 
-    return <div className='row mb-2 border-danger p-1'>
+    useEffect(() => { if(isEdit.edit) setInput({name: isEdit.name, class: isEdit.class, licenseNum: isEdit.licenseNum, date: isEdit.date, amount: isEdit.amount}) }, [isEdit])
+    useEffect(() => { getDriver() }, [refresh])
+
+    return <div className='row mb-2 p-1'>
         
         <div className='col-sm input-group'>
             <select id="inputState" className="form-control" name='name' value={input.name} onChange={handleChange}>
-                <option value="DEFAULT" disabled hidden>Choose driver</option>
+                <option value='' disabled hidden>Choose driver</option>
                 {drivers.data.map((item, index) => <option key={index} value={item.id}>{item.name}</option>)}
             </select>
         </div>
 
         <div className='col-sm input-group'>
             <select id="inputState" className="form-control" name='class' value={input.class} onChange={handleChange}>
-                <option value="DEFAULT" disabled hidden>Choose class</option>
-                {['CLASS_A', 'CLASS_B', 'CLASS_C'].map((item, index) => <option key={index} value={item}>{item}</option>)}
+                <option value='' disabled hidden>Choose class</option>
+                {classTypes.map((item, index) => <option key={index} value={item}>{item}</option>)}
             </select>
         </div>
         

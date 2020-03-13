@@ -13,7 +13,10 @@ const GrailsLogoHeader = () => {
 }
 
 const MainPage = () => {
+    // handle post or patch request depending on the state of boolean isEdit.edit
     const [isEdit, setIsEdit] = useState({ edit: false, id: '', name: '', class: '', licenseNum: '', date: '', amount: ''})
+
+    // handle re-rendering the app when a request has been succesfully executed
     const [refresh, setRefresh] = useState(false)
 
     return <div className='container-fluid'>
