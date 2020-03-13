@@ -7,13 +7,7 @@ export const toaster = Toaster.create({
    maxToasts: 3
 })
 
-// export const toastSuccess = (msg, durationInMilliseconds) => toaster.show({
-//    message: msg,
-//    intent: Intent.SUCCESS,
-//    timeout: durationInMilliseconds
-// })
-
-const duration = 2000
+const duration = 2500
 
 export const toastSuccess = (msg, durationInMilliseconds) => toaster.show({
    message: msg,
@@ -38,9 +32,3 @@ export const toastWarning = (msg, durationInMilliseconds) => toaster.show({
    intent: Intent.WARNING,
    timeout: duration
 })
-
-// export const toastDynamic = (msg) => toaster.show({
-//    message: Array.isArray(msg) ? msg.join('  \n') : msg,
-//    intent,
-//    timeout: durationInMilliseconds
-// })

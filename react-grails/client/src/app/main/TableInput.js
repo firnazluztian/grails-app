@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { SERVER_URL } from '../../config'
 import axios from 'axios' 
+import { toastSuccess, toastDanger } from '../widget/toaster'
 
 const inputInitialState = { name: '', class: '', licenseNum: '', date: '', amount: '' }
 
@@ -10,7 +11,9 @@ const TableInput = ({ isEdit, setIsEdit, refresh, setRefresh }) => {
 
     const getDriver = async () => {
         await axios
-        .get(SERVER_URL + 'driver').then(res => setDrivers(res)).catch(err => console.log('@getDriver', err))
+        .get(SERVER_URL + 'driver')
+        .then(res => setDrivers(res))
+        .catch(err => { toastDanger(`${err}, please try again`); console.log('@getDriver', err) })
     }
     
     const postLicense = async () => {
@@ -19,11 +22,11 @@ const TableInput = ({ isEdit, setIsEdit, refresh, setRefresh }) => {
             classType: input.class, licenseNum: parseInt(input.licenseNum), bid: { date: input.date, amount: parseInt(input.amount) }, driver: { id: parseInt(input.name) }
         })
         .then(res => {
-            alert('succesfully saved')
+            toastSuccess('succesfully saved')
             setRefresh(true)
             setInput(inputInitialState)
         })
-        .catch(err => console.log('@postLicense', err))
+        .catch(err => { toastDanger(`${err}, please try again`); console.log('@postLicense', err) })
     }
     
     const updateLicense = async (input, selectedId) => {
@@ -32,13 +35,12 @@ const TableInput = ({ isEdit, setIsEdit, refresh, setRefresh }) => {
             classType: input.class, licenseNum: parseInt(input.licenseNum), bid: { date: input.date, amount: parseInt(input.amount) }, driver: { id: parseInt(input.name) }
         })
         .then(res => {
-            alert('succesfully edited')
-            console.log(res)
+            toastSuccess('succesfully edited')
             setRefresh(true)
             setInput(inputInitialState)
             setIsEdit({edit: false})
         })
-        .catch(err => console.log('@updateLicense', err))
+        .catch(err => { toastDanger(`${err}, please try again`); console.log('@updateLicense', err) })
     }
 
     useEffect(() => {
