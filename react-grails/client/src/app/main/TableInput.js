@@ -4,14 +4,9 @@ import axios from 'axios'
 
 const inputInitialState = { name: '', class: '', licenseNum: '', date: '', amount: '' }
 
-const TableInput = ({ isEdit, setIsEdit }) => {
+const TableInput = ({ isEdit, setIsEdit, refresh, setRefresh }) => {
     const [input, setInput] = useState(inputInitialState)
     const [drivers, setDrivers] = useState({data:[]})
-
-    // DEBUG
-    useEffect(() => {
-        console.log(isEdit)
-    }, [isEdit])
 
     const getDriver = async () => {
         await axios
@@ -25,6 +20,7 @@ const TableInput = ({ isEdit, setIsEdit }) => {
         })
         .then(res => {
             alert('succesfully saved')
+            setRefresh(true)
             setInput(inputInitialState)
         })
         .catch(err => console.log('@postLicense', err))
@@ -38,6 +34,7 @@ const TableInput = ({ isEdit, setIsEdit }) => {
         .then(res => {
             alert('succesfully edited')
             console.log(res)
+            setRefresh(true)
             setInput(inputInitialState)
             setIsEdit({edit: false})
         })
@@ -48,7 +45,7 @@ const TableInput = ({ isEdit, setIsEdit }) => {
         if(isEdit.edit) setInput({name: isEdit.name, class: isEdit.class, licenseNum: isEdit.licenseNum, date: isEdit.date, amount: isEdit.amount})
     }, [isEdit])
 
-    useEffect(() => { getDriver() }, [])
+    useEffect(() => { getDriver() }, [refresh])
 
     const handleChange = (e) => setInput({...input, [e.target.name]: e.target.value})
     const handleSubmit = () => {
@@ -58,41 +55,41 @@ const TableInput = ({ isEdit, setIsEdit }) => {
         else updateLicense(input, isEdit.id)
     }
 
-    return <div className='row mb-2'>
+    return <div className='row mb-2 border-danger p-1'>
         
-        <div className='col input-grup'>
+        <div className='col-sm input-group'>
             <select id="inputState" className="form-control" name='name' value={input.name} onChange={handleChange}>
-                <option value="" selected disabled hidden>Choose driver</option>
+                <option value="DEFAULT" disabled hidden>Choose driver</option>
                 {drivers.data.map((item, index) => <option key={index} value={item.id}>{item.name}</option>)}
             </select>
         </div>
 
-        <div className='col input-grup'>
+        <div className='col-sm input-group'>
             <select id="inputState" className="form-control" name='class' value={input.class} onChange={handleChange}>
-                <option value="" selected disabled hidden>Choose class</option>
+                <option value="DEFAULT" disabled hidden>Choose class</option>
                 {['CLASS_A', 'CLASS_B', 'CLASS_C'].map((item, index) => <option key={index} value={item}>{item}</option>)}
             </select>
         </div>
         
-        <div className='col input-grup'>
+        <div className='col-sm input-group'>
             <input className='form-control' type='number' placeholder='License number' name='licenseNum' value={input.licenseNum} onChange={handleChange} />
         </div>
 
-        <div className='col input-grup'>
+        <div className='col-sm input-group'>
             <input className='form-control' type='date' placeholder='License number' name='date' value={input.date} onChange={handleChange} />
         </div>
 
-        <div className='col input-grup'>
+        <div className='col-sm input-group'>
             <input className='form-control' type='number' placeholder='Bid amount' name='amount' value={input.amount} onChange={handleChange} />
         </div>
 
         {!isEdit.edit && 
-        <div className='col input-grup'>
+        <div className='col-sm input-group'>
             <button className='btn btn-success mr-1' onClick={handleSubmit}>Add</button>
         </div>}
 
         {isEdit.edit && 
-        <div className='col input-grup'>
+        <div className='col-sm input-group'>
             <button className='btn btn-primary mr-1' onClick={handleSubmit}>Edit</button>
             <button className='btn btn-success mr-1' onClick={() => { setIsEdit({edit: false}); setInput(inputInitialState)}}
             >Cancel</button>

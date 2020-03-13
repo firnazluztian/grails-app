@@ -4,7 +4,7 @@ import logo from '../logo.svg';
 import MainPage from './main/MainPage';
 
 const GrailsLogoHeader = () => {
-    return <div className="App">
+    return <div className="App mb-2">
         <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>React-Grails app</p>
